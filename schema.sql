@@ -1,0 +1,63 @@
+CREATE TABLE roles (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  role_id BIGINT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  is_active BOOLEAN DEFAULT TRUE,
+  FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE pet_types (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE pet_statuses (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE pets (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  type_id BIGINT NOT NULL,
+  breed VARCHAR(100),
+  age INT CHECK (age >= 0),
+  description TEXT,
+  status_id BIGINT NOT NULL,
+  FOREIGN KEY (type_id) REFERENCES pet_types(id),
+  FOREIGN KEY (status_id) REFERENCES pet_statuses(id)
+);
+
+CREATE TABLE post_statuses (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE posts (
+  id BIGSERIAL PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  status_id BIGINT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  user_id BIGINT NOT NULL,
+  pet_id BIGINT NOT NULL,
+  FOREIGN KEY (status_id) REFERENCES post_statuses(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE
+);
+
+CREATE TABLE images (
+  id BIGSERIAL PRIMARY KEY,
+  url TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  post_id BIGINT NOT NULL,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
