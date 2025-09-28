@@ -1,0 +1,76 @@
+Table users {
+  id integer [primary key]
+  name varchar
+  email varchar [unique]
+  phone varchar
+  role_id integer [not null]
+  created_at timestamp
+  is_active boolean
+}
+
+Table roles {
+  id integer [primary key]
+  name varchar [unique]
+}
+
+Table locations {
+  id integer [primary key]
+  latitude decimal(9,6)
+  longitude decimal(9,6)
+  city varchar
+  state varchar
+  country varchar
+}
+
+Table pets {
+  id integer [primary key]
+  name varchar
+  type_id integer [not null]
+  breed varchar
+  age integer
+  description text
+  status_id integer [not null]
+  location_id integer [not null]
+}
+
+Table pet_types {
+  id integer [primary key]
+  name varchar [unique]
+}
+
+Table pet_statuses {
+  id integer [primary key]
+  name varchar [unique]
+}
+
+Table posts {
+  id integer [primary key]
+  title varchar
+  description text
+  status_id integer [not null]
+  created_at timestamp
+  user_id integer [not null]
+  pet_id integer [not null]
+}
+
+Table post_statuses {
+  id integer [primary key]
+  name varchar [unique]
+}
+
+Table images {
+  id integer [primary key]
+  url text
+  created_at timestamp
+  post_id integer [not null]
+}
+
+// Relationships
+Ref: users.role_id > roles.id
+Ref: posts.user_id > users.id
+Ref: posts.pet_id > pets.id
+Ref: pets.type_id > pet_types.id
+Ref: pets.status_id > pet_statuses.id
+Ref: posts.status_id > post_statuses.id
+Ref: images.post_id > posts.id
+Ref: pets.location_id > locations.id
